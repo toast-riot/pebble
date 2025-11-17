@@ -1,0 +1,6 @@
+- Use standard checks e.g. `# @app_commands.checks.has_permissions(ban_members=True)`
+- Use global error handling (only send response if a custom error?)
+- Check all the TODOs I've scattered around
+- Replace `os.path` -> `pathlib`
+- Config system could use `collections.defaultdict`
+- Switch to using message forwarding for pins?

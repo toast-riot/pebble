@@ -1,0 +1,6 @@
+- threads
+  - Threads can be in NSFW channels
+  - Theads can be private
+  - Some channels to do not progress fast and may have lots of threads (socials, announcements, etc.). Perhaps making a channel-exclusion list would solve this
+  - Can threads be linked? What should an embed look like? Use the new forwarding feature?
+  - Threads can be renamed, should the bot reflect this?
