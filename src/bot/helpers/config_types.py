@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, get_type_hints, get_origin, get_args
+from typing import Generic, TypeVar, get_origin, get_args
 from types import UnionType, NoneType
 
 UNSET = object()
@@ -23,11 +23,6 @@ class ConfigObj():
             return self._to_dict(obj._data)
         else:
             raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
-
-    def _hint(self, attr_name: str):
-        type_hints = get_type_hints(self)
-        if attr_name in type_hints: return type_hints[attr_name]
-        raise AttributeError(f"Attribute '{attr_name}' not found in type hints for {self.__name__}")
 
 
 class AutoDict(dict, Generic[KT, VT]):
