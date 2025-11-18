@@ -1,0 +1,10 @@
+[project]
+name = "pebble"
+version = "0.1.0"
+description = "A Discord bot"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "discord>=2.3.2",
+    "python-dotenv>=1.2.1",
+]
