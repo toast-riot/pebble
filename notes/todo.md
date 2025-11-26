@@ -1,4 +1,3 @@
 - Use global error handling (only send response if a custom error?)
 - Check all the TODOs I've scattered around
-- Replace `os.path` -> `pathlib`
 - Switch to using message forwarding for pins?

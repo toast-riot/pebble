@@ -1,5 +1,4 @@
 import json
-import os
 import sys
 from .config_types import ConfigObj, AutoDict, cfg, create_auto_dict
 from pathlib import Path
@@ -43,7 +42,9 @@ class Config_File:
             json.dump(self.config._data, file, indent=4)
 
     def _load(self) -> dict:
-        if not os.path.exists(self.file_path): return {}
-        if os.path.getsize(self.file_path) == 0: return {}
+        if not self.file_path.exists():
+            return {}
+        if self.file_path.stat().st_size == 0:
+            return {}
         with open(self.file_path, "r") as file:
             return json.load(file)
