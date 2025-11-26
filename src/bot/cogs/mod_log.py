@@ -13,9 +13,9 @@ class mod_log(commands.Cog):
 
 
     class AuditLogMessage():
-        initiator: discord.User
+        initiator: discord.User | discord.Member
         action: str
-        target: discord.User
+        target: discord.User | discord.Member
         reason: str | None = None
         extra: str | None = None
 
@@ -46,9 +46,11 @@ class mod_log(commands.Cog):
         # should always be present if the entry.action is relevant
         if not entry.user: raise BotException("Audit log entry missing user")
         if not entry.target: raise BotException("Audit log entry missing target")
+        if not isinstance(entry.target, (discord.User, discord.Member)):
+            raise BotException("Audit log entry target is not a User or Member")
 
-        message.initiator = await self.bot.fetch_user(entry.user.id)
-        message.target = await self.bot.fetch_user(int(entry.target.id))
+        message.initiator = entry.user
+        message.target = entry.target
         message.reason = entry.reason
 
         mod_log_channel_id = config.cfg.servers[entry.guild.id].channel_mod_log
