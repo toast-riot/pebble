@@ -1,5 +1,4 @@
 import discord
-from typing import Any
 
 async def error(interaction: discord.Interaction, message: str):
     await respond(interaction, message)
@@ -11,7 +10,7 @@ async def delete(interaction: discord.Interaction):
     await interaction.delete_original_response()
 
 
-async def respond(interaction: discord.Interaction, content: Any | None = None, ephemeral: bool = False, **kwargs):
+async def respond(interaction: discord.Interaction, content: str, ephemeral: bool = False, **kwargs):
     if not interaction.response.is_done():
         await interaction.response.send_message(content=content, ephemeral=ephemeral, **kwargs)
         return
