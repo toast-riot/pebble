@@ -4,6 +4,7 @@ from types import UnionType, NoneType
 UNSET = object()
 KT = TypeVar('KT')
 VT = TypeVar('VT')
+ET = TypeVar("ET")
 
 
 class ConfigObj():
@@ -12,15 +13,15 @@ class ConfigObj():
         return self._to_dict(self.__dict__)
 
     @classmethod
-    def _to_dict(self, obj):
+    def _to_dict(cls, obj):
         if isinstance(obj, (str, int, float, bool, NoneType)):
             return obj
         elif isinstance(obj, dict):
-            return {k: self._to_dict(v) for k, v in obj.items()}
+            return {k: cls._to_dict(v) for k, v in obj.items()}
         elif isinstance(obj, list):
-            return [self._to_dict(item) for item in obj]
+            return [cls._to_dict(item) for item in obj]
         elif isinstance(obj, ConfigObj):
-            return self._to_dict(obj._data)
+            return cls._to_dict(obj._data)
         else:
             raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
@@ -72,17 +73,18 @@ def json_type_validate(value, expected) -> bool:
     raise ValueError(f"Unsupported type: {expected}")
 
 
-def cfg(config: dict, value: str, expected_type = UNSET, default = UNSET):
-    if value not in config:
+def cfg(config: dict, key: str, expected_type: type[ET] | object = UNSET, default = UNSET) -> ET:
+    if key not in config:
         if default is UNSET:
-            raise KeyError(f"Key '{value}' not found")
-        value = default
+            raise KeyError(f"Key '{key}' not found")
+        result = default
     else:
-        value = config[value]
-    if (expected_type is not UNSET) and not json_type_validate(value, expected_type):
-        raise TypeError(f"Value {value} does not match expected type {expected_type}")
-    return value
+        result = config[key]
+    if (expected_type is not UNSET) and not json_type_validate(result, expected_type):
+        raise TypeError(f"Value {result!r} (type: {type(result).__name__}) does not match expected type {expected_type}")
+    return result
 
 
-def create_auto_dict(key_type: type, val_type: ConfigObj, vals: dict) -> 'AutoDict[KT, VT]':
+def create_auto_dict(key_type: type[KT], val_type: type[VT], vals: dict) -> AutoDict[KT, VT]:
+    # assumes key_type and val_type can be constructed from a single value (k) or (v)
     return AutoDict(lambda: val_type(), {key_type(k): val_type(v) for k, v in vals.items()})
