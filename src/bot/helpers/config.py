@@ -28,9 +28,11 @@ class Config_Object(ConfigObj):
 
 
 class Config_File:
-    def __init__(self, file_path: str):
-        file_path = Path(file_path)
-        self.file_path = file_path if file_path.is_absolute() else Path(sys.modules["__main__"].__file__).parent / file_path
+    def __init__(self, file_path: Path):
+        if file_path.is_absolute():
+            self.file_path = file_path
+        else:
+            self.file_path = Path(sys.modules["__main__"].__file__).parent / file_path
         self.load()
 
     def load(self) -> None:

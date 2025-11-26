@@ -4,8 +4,7 @@ from discord.ext import commands
 from urllib.parse import urlparse
 from .. import config
 from ..helpers import interactions
-
-from ..helpers.misc import BotException
+from ..helpers.exceptions import *
 
 class pins(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
@@ -64,8 +63,8 @@ class pins(commands.Cog):
 
         pin_channel = interaction.guild.get_channel(channel_to_get)
 
-        if not pin_channel:
-            raise BotException(f"Pinboard channel not found (looking for `#{channel_to_get}`)")
+        # if not pin_channel:
+            # raise BotException(f"Pinboard channel not found (looking for `#{channel_to_get}`)")
             # await interaction.edit_original_response(content=f"Pinboard channel not found (looking for `#{channel_to_get}`)")
             # return
 

@@ -7,7 +7,7 @@ class Bot(commands.Bot):
     def __init__(self) -> None:
         intents = discord.Intents.default()
         intents.moderation = True
-        intents.message_content = True # For consistency, might not be needed
+        intents.message_content = True
 
         super().__init__(command_prefix="", intents=intents)
 
@@ -29,5 +29,5 @@ class Bot(commands.Bot):
             #         print(f"WARNING: Missing permissions to view audit log in {guild.name}")
 
         @self.event
-        async def on_message(message: discord.Message) -> None: # This intentionally prevents the bot checking for plaintext commands
+        async def on_message(message: discord.Message) -> None: # TODO: possible to add hooks to this in cogs?
             pass
