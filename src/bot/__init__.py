@@ -1,9 +1,15 @@
 import discord
 from discord.ext import commands
-from . import cogs_manager
 from sys import argv
+from . import cogs
+from . import constants
+from .helpers import config as _config
+
+# pyright: reportUnusedFunction=hint
 
 class Bot(commands.Bot):
+    __slots__: tuple[()] = ()
+
     def __init__(self) -> None:
         intents = discord.Intents.default()
         intents.moderation = True
@@ -13,7 +19,7 @@ class Bot(commands.Bot):
 
         @self.event
         async def setup_hook():
-            await cogs_manager.add_all(self)
+            await cogs.add_all(self)
 
         @self.event
         async def on_ready():
@@ -29,5 +35,9 @@ class Bot(commands.Bot):
             #         print(f"WARNING: Missing permissions to view audit log in {guild.name}")
 
         @self.event
-        async def on_message(message: discord.Message) -> None: # TODO: possible to add hooks to this in cogs?
+        async def on_message(_: discord.Message) -> None:
+            # TODO: possible to add hooks to this in cogs?
             pass
+
+cfg_file = _config.Config_File(constants.CONFIG_FILE)
+cfg = cfg_file.config
