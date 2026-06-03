@@ -8,6 +8,6 @@ CLIENT = Bot()
 
 token = os.getenv("TOKEN")
 if not token:
-    raise Exception("TOKEN not found in environment variables")
+    raise RuntimeError("TOKEN not found in environment variables")
 
 CLIENT.run(token)
