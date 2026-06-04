@@ -1,5 +1,7 @@
-import discord
 from typing import Any
+
+import discord
+
 
 # placeholder for potential future styling
 async def error(interaction: discord.Interaction, message: str):

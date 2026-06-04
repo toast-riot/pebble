@@ -1,7 +1,8 @@
 from discord.ext import commands
+
 from .management import management
-from .pins import pins
 from .mod_log import mod_log
+from .pins import pins
 
 _COGS = [
     management,

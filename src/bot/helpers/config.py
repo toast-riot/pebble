@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
+
 from pydantic import BaseModel, Field
+
 
 class ServerConfig(BaseModel):
     channel_mod_log: int | None = None

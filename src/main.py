@@ -1,4 +1,5 @@
 import os
+
 from bot import Bot
 
 CLIENT = Bot()

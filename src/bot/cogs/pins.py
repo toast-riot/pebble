@@ -1,26 +1,32 @@
+from typing import final, override
+from urllib.parse import urlparse
+
 import discord
 from discord import app_commands
 from discord.ext import commands
-from urllib.parse import urlparse
-from .. import config
-from ..helpers import interactions
-from ..helpers.exceptions import *
 
+from ..helpers import interactions
+from ..helpers.exceptions import BotException
+
+
+@final
 class pins(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.message_pin_ctx = app_commands.ContextMenu(
-            name='Pin Message',
-            callback=self.message_pin_message_context
+            name="Pin Message", callback=self.message_pin_message_context
         )
         self.bot.tree.add_command(self.message_pin_ctx)
 
-
+    @override
     async def cog_unload(self) -> None:
-        self.bot.tree.remove_command(self.message_pin_ctx.name, type=self.message_pin_ctx.type)
+        self.bot.tree.remove_command(
+            self.message_pin_ctx.name, type=self.message_pin_ctx.type
+        )
 
-
-    async def message_pin_message_context(self, interaction: discord.Interaction, message: discord.Message) -> None:
+    async def message_pin_message_context(
+        self, interaction: discord.Interaction, message: discord.Message
+    ) -> None:
         await interaction.response.defer()
         await self.pinboard(interaction, message)
 
@@ -53,7 +59,18 @@ class pins(commands.Cog):
         return embed
 
 
-    async def pinboard(self, interaction: discord.Interaction, message: discord.Message) -> None:
+    async def pinboard(
+        self, interaction: discord.Interaction, message: discord.Message
+    ) -> None:
+        # await message.forward(interaction.channel)
+        # await interactions.respond(interaction, content=f"Message pinned to {interaction.channel.mention}")
+
+        await message.channel.send()
+
+        await interactions.respond(
+            interaction, content=f"Message pinned to {message.channel.mention}"
+        )
+
         is_nsfw = message.channel.is_nsfw() or message.channel.id in config.server(interaction.guild.id).nsfw_extras
 
         if is_nsfw:

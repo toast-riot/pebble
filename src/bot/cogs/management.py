@@ -1,8 +1,11 @@
+from typing import final
+
 import discord
 from discord import app_commands
 from discord.ext import commands
+
 from ..helpers import interactions
-from typing import final
+
 
 @final
 class management(commands.Cog):

@@ -1,13 +1,19 @@
+from typing import final, override
+
 import discord
 from discord.ext import commands
-from .. import config
-from ..helpers.exceptions import *
 
+from .. import config
+from ..helpers.exceptions import BotException, ConfigurationException
+
+
+@final
 class mod_log(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.bot.add_listener(self.on_audit_log_entry_create, "on_audit_log_entry_create")
 
+    @override
     async def cog_unload(self) -> None:
         self.bot.remove_listener(self.on_audit_log_entry_create, "on_audit_log_entry_create")
 

@@ -1,8 +1,9 @@
+from sys import argv
+
 import discord
 from discord.ext import commands
-from sys import argv
-from . import cogs
-from . import constants
+
+from . import cogs, constants
 from .helpers import config as _config
 
 # pyright: reportUnusedFunction=hint
