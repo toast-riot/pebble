@@ -3,8 +3,7 @@ from sys import argv
 import discord
 from discord.ext import commands
 
-from . import cogs, constants
-from .helpers import config as _config
+from . import cogs
 
 # pyright: reportUnusedFunction=hint
 
@@ -39,6 +38,3 @@ class Bot(commands.Bot):
         async def on_message(_: discord.Message) -> None:
             # TODO: possible to add hooks to this in cogs?
             pass
-
-CFG_FILE = _config.Config_File(constants.CONFIG_FILE)
-CFG = CFG_FILE.config

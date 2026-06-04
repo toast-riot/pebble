@@ -3,7 +3,7 @@ from typing import final, override
 import discord
 from discord.ext import commands
 
-from .. import config
+from ..config import CFG
 from ..helpers.exceptions import BotException, ConfigurationException
 
 
@@ -59,16 +59,16 @@ class mod_log(commands.Cog):
         message.target = entry.target
         message.reason = entry.reason
 
-        mod_log_channel_id = config.cfg.servers[entry.guild.id].channel_mod_log
+        mod_log_channel_id = CFG.get_server(entry.guild.id).channel_mod_log
         if not mod_log_channel_id:
-            raise ConfigurationException(f"Mod log channel ID not set")
+            raise ConfigurationException("Mod log channel ID not set")
         
         mod_log_channel = entry.guild.get_channel(mod_log_channel_id)
         if not mod_log_channel:
-            raise ConfigurationException(f"Mod log channel not found")
+            raise ConfigurationException("Mod log channel not found")
         
         if not isinstance(mod_log_channel, discord.TextChannel):
-            raise ConfigurationException(f"Mod log channel is not a text channel")
+            raise ConfigurationException("Mod log channel is not a text channel")
 
         message = await message.build_log()
         await mod_log_channel.send(message, allowed_mentions = discord.AllowedMentions(users=False))
