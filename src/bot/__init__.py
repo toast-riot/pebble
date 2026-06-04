@@ -39,5 +39,5 @@ class Bot(commands.Bot):
             # TODO: possible to add hooks to this in cogs?
             pass
 
-cfg_file = _config.Config_File(constants.CONFIG_FILE)
-cfg = cfg_file.config
+CFG_FILE = _config.Config_File(constants.CONFIG_FILE)
+CFG = CFG_FILE.config

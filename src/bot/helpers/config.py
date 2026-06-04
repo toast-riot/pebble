@@ -1,50 +1,39 @@
 import json
-import sys
-from .config_types import ConfigObj, AutoDict, cfg, create_auto_dict
 from pathlib import Path
+from pydantic import BaseModel, Field
 
-class Config_Object(ConfigObj):
-    servers: AutoDict[int, 'Config_Object.Server']
+class ServerConfig(BaseModel):
+    channel_mod_log: int | None = None
+    channel_pins: int | None = None
+    channel_pins_nsfw: int | None = None
+    duplicate_pins_check_count: int = 50
+    nsfw_extras: list[int] = Field(default_factory=list)
+    nsfw_pin_channel_check_enabled: bool = True
 
-    def __init__(self, config: dict = {}):
-        self.servers = create_auto_dict(int, Config_Object.Server, cfg(config, "servers", dict[str, dict], {}))
+class Config_Object(BaseModel):
+    servers: dict[int, ServerConfig] = Field(default_factory=dict)
 
-    class Server(ConfigObj):
-        channel_mod_log: int | None
-        channel_pins: int | None
-        channel_pins_nsfw: int | None
-        duplicate_pins_check_count: int
-        nsfw_extras: list[int]
-        nsfw_pin_channel_check_enabled: bool
-
-        def __init__(self, config: dict = {}):
-            self.channel_mod_log = cfg(config, "channel_mod_log", int | None, None)
-            self.channel_pins = cfg(config, "channel_pins", int | None, None)
-            self.channel_pins_nsfw = cfg(config, "channel_pins_nsfw", int | None, None)
-            self.duplicate_pins_check_count = cfg(config, "duplicate_pins_check_count", int, 50)
-            self.nsfw_extras = cfg(config, "nsfw_extras", list[int], [])
-            self.nsfw_pin_channel_check_enabled = cfg(config, "nsfw_pin_channel_check_enabled", bool, True)
-
+    def get_server(self, server_id: int):
+        if server_id not in self.servers:
+            self.servers[server_id] = ServerConfig()
+        return self.servers[server_id]
 
 class Config_File:
+    file_path: Path
+    config: Config_Object
+
     def __init__(self, file_path: Path):
-        if file_path.is_absolute():
-            self.file_path = file_path
-        else:
-            self.file_path = Path(sys.modules["__main__"].__file__).parent / file_path
-        self.load()
+        self.file_path = file_path.resolve()
+        self.config = self.load()
 
-    def load(self) -> None:
-        self.config = Config_Object(self._load())
+    def load(self) -> Config_Object:
+        if not self.file_path.exists() or self.file_path.stat().st_size == 0:
+            return Config_Object()
+        with self.file_path.open("r") as file:
+            data = json.load(file)
+            return Config_Object.model_validate(data)
 
-    def save(self) -> None:
-        with open(self.file_path, "w") as file:
-            json.dump(self.config._data, file, indent=4)
-
-    def _load(self) -> dict:
-        if not self.file_path.exists():
-            return {}
-        if self.file_path.stat().st_size == 0:
-            return {}
-        with open(self.file_path, "r") as file:
-            return json.load(file)
+    def save(self):
+        self.file_path.parent.mkdir(parents=True, exist_ok=True)
+        with self.file_path.open("w") as file:
+            json.dump(self.config.model_dump(), file, indent=4)
