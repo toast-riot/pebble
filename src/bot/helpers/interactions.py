@@ -1,6 +1,7 @@
 from typing import Any
 
 import discord
+from discord.utils import MISSING
 
 
 # placeholder for potential future styling
@@ -16,13 +17,13 @@ async def delete(interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
     await interaction.delete_original_response()
 
-async def respond(interaction: discord.Interaction, content: str, ephemeral: bool = False, **kwargs: Any) -> None:
+async def respond(interaction: discord.Interaction, content: str = MISSING, *, ephemeral: bool = MISSING, **kwargs: Any) -> None:
     if not interaction.response.is_done():
-        await interaction.response.send_message(content=content, ephemeral=ephemeral, **kwargs)
+        await interaction.response.send_message(content=content, ephemeral=(ephemeral or False), **kwargs)
         return
 
     try:
-        if (await interaction.original_response()).flags.ephemeral == ephemeral:
+        if (ephemeral is MISSING) or (await interaction.original_response()).flags.ephemeral == ephemeral:
             await interaction.edit_original_response(content=content, **kwargs)
             return
         await interaction.delete_original_response()
