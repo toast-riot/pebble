@@ -11,6 +11,7 @@ async def error(interaction: discord.Interaction, message: str):
 
 # helpers for interactions
 # handles current response state much more gracefully than the default behavior
+# this will probably come back to bite me since the methods used have massively varying signatures
 
 async def delete(interaction: discord.Interaction):
     if not interaction.response.is_done():

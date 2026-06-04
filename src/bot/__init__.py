@@ -30,10 +30,6 @@ class Bot(commands.Bot):
                 await self.tree.sync()
                 print("Commands synced")
 
-            # for guild in bot.guilds:
-            #     if not guild.me.guild_permissions.view_audit_log:
-            #         print(f"WARNING: Missing permissions to view audit log in {guild.name}")
-
         @self.event
         async def on_message(_: discord.Message) -> None:
             # TODO: possible to add hooks to this in cogs?
