@@ -5,6 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from ..helpers import interactions
+from ..helpers.exceptions import BotException
 
 
 @final
@@ -19,8 +20,16 @@ class management(commands.Cog):
         self.bot.tree.error(self.original_error_handler)
 
     async def on_app_command_error(self, interaction: discord.Interaction[commands.Bot], error: discord.app_commands.AppCommandError):
-        await interactions.error(interaction, "An error occurred.")
-        await self.original_error_handler(interaction, error)
+        try:
+            command = interaction.command
+            if (command is not None) and (command._has_any_error_handlers()): # pyright: ignore[reportPrivateUsage]
+                return
+            if isinstance(error, BotException):
+                await interactions.error(interaction, f"An error occurred: {error}")
+            else:
+                await interactions.error(interaction, "An error occurred.")
+        finally:
+            await self.original_error_handler(interaction, error)
 
     @app_commands.command() # TODO: rm
     async def test(self, interaction: discord.Interaction[commands.Bot]):
