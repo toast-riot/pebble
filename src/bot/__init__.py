@@ -4,6 +4,7 @@ import discord
 from discord.ext import commands
 
 from . import cogs
+from .config import CFG, CFG_FILE
 
 # pyright: reportUnusedFunction=hint
 
@@ -19,6 +20,11 @@ class Bot(commands.Bot):
 
         @self.event
         async def setup_hook():
+            # create missing server configurations and write back
+            for guild in self.guilds:
+                CFG.get_server(guild.id)
+            CFG_FILE.save()
+
             await cogs.add_all(self)
 
         @self.event
