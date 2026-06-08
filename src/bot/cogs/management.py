@@ -32,7 +32,7 @@ class management(commands.Cog):
 
             # to avoid potential log leaking, only sends messages for known exceptions
             if isinstance(error_, BotException):
-                handled = True
+                handled |= error_.handled
                 await interactions.error(interaction, str(error_))
             else:
                 await interactions.error(interaction)
