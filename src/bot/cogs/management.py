@@ -20,16 +20,25 @@ class management(commands.Cog):
         self.bot.tree.error(self.original_error_handler)
 
     async def on_app_command_error(self, interaction: discord.Interaction[commands.Bot], error: discord.app_commands.AppCommandError):
+        error_ = error
+        if isinstance(error, app_commands.CommandInvokeError):
+            error_ = error.original
+
+        handled = False
         try:
             command = interaction.command
             if (command is not None) and (command._has_any_error_handlers()): # pyright: ignore[reportPrivateUsage]
                 return
-            if isinstance(error, BotException):
-                await interactions.error(interaction, f"An error occurred: {error}")
+
+            # to avoid potential log leaking, only sends messages for known exceptions
+            if isinstance(error_, BotException):
+                handled = True
+                await interactions.error(interaction, f"An error occurred: {error_}")
             else:
                 await interactions.error(interaction, "An error occurred.")
         finally:
-            await self.original_error_handler(interaction, error)
+            if not handled:
+                await self.original_error_handler(interaction, error)
 
     @app_commands.command() # TODO: rm
     async def test(self, interaction: discord.Interaction[commands.Bot]):

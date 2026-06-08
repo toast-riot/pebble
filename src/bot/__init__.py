@@ -20,16 +20,16 @@ class Bot(commands.Bot):
 
         @self.event
         async def setup_hook():
-            # create missing server configurations and write back
-            for guild in self.guilds:
-                CFG.get_server(guild.id)
-            CFG_FILE.save()
-
             await cogs.add_all(self)
 
         @self.event
         async def on_ready():
             print(f"Connected => {self.user}")
+
+            # create missing server configurations and write back
+            for guild in self.guilds:
+                CFG.get_server(guild.id)
+            CFG_FILE.save()
 
             if len(argv) > 1 and argv[1] == "sync":
                 print("Syncing commands..." )

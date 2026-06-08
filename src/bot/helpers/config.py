@@ -10,7 +10,6 @@ class ServerConfig(BaseModel):
     channel_pins_nsfw: int | None = None
     duplicate_pins_check_count: int = 50
     nsfw_extras: list[int] = Field(default_factory=list)
-    nsfw_pin_channel_check_enabled: bool = True
 
 class Config_Object(BaseModel):
     servers: dict[int, ServerConfig] = Field(default_factory=dict)
