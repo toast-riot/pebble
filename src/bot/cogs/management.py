@@ -33,9 +33,9 @@ class management(commands.Cog):
             # to avoid potential log leaking, only sends messages for known exceptions
             if isinstance(error_, BotException):
                 handled = True
-                await interactions.error(interaction, f"An error occurred: {error_}")
+                await interactions.error(interaction, str(error_))
             else:
-                await interactions.error(interaction, "An error occurred.")
+                await interactions.error(interaction)
         finally:
             if not handled:
                 await self.original_error_handler(interaction, error)

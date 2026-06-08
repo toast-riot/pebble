@@ -4,9 +4,17 @@ import discord
 from discord.utils import MISSING
 
 
-# placeholder for potential future styling
-async def error(interaction: discord.Interaction, message: str):
-    await respond(interaction, message)
+async def error(interaction: discord.Interaction, message: str | None = None):
+    try:
+        embed = discord.Embed(
+            title="Error",
+            description = message or "No error details were provided.",
+            color = 0xff2930,
+        )
+        await respond(interaction, embed=embed)
+    except Exception:
+        msg = f"Error: {message}" if message else "An error occurred, but no details were provided."
+        await respond(interaction, msg)
 
 
 # helpers for interactions
