@@ -5,8 +5,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from ..config import CFG
 from ..helpers import interactions
-from ..helpers.exceptions import BotException
+from ..helpers.exceptions import BotException, ConfigurationException
 
 
 @final
@@ -14,7 +15,13 @@ class pins(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.message_pin_ctx = app_commands.ContextMenu(
-            name="Pin Message", callback=self.message_pin_message_context
+            name="Pin Message",
+            callback=self.message_pin_message_context,
+            allowed_contexts=app_commands.AppCommandContext(
+                guild=True,
+                dm_channel=False,
+                private_channel=False
+            )
         )
         self.bot.tree.add_command(self.message_pin_ctx)
 
