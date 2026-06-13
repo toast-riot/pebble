@@ -35,12 +35,6 @@ class pins(commands.Cog):
     async def message_pin_message_context(
         self, interaction: discord.Interaction, message: discord.Message
     ) -> None:
-        await interaction.response.defer()
-        await self.pinboard(interaction, message)
-
-    async def pinboard(
-        self, interaction: discord.Interaction, message: discord.Message
-    ) -> None:
         assert interaction.guild
         assert isinstance(message.channel, discord.abc.GuildChannel)
 
