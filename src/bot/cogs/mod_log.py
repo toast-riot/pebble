@@ -12,10 +12,20 @@ class mod_log(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
         self.bot.add_listener(self.on_audit_log_entry_create, "on_audit_log_entry_create")
+        self.bot.add_listener(self.on_ready, "on_ready")
 
     @override
     async def cog_unload(self) -> None:
         self.bot.remove_listener(self.on_audit_log_entry_create, "on_audit_log_entry_create")
+        self.bot.remove_listener(self.on_ready, "on_ready")
+
+
+    async def on_ready(self):
+        for guild in self.bot.guilds:
+            if not guild.me.guild_permissions.view_audit_log:
+                print(f"WARNING: Missing permissions to view audit log in {guild.name}")
+            if guild.owner_id and (owner := await guild.fetch_member(guild.owner_id)):
+                await owner.send("test")
 
 
     class AuditLogMessage():

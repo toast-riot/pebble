@@ -12,8 +12,11 @@ class Bot(commands.Bot):
     __slots__: tuple[()] = ()
 
     def __init__(self) -> None:
-        intents = discord.Intents.default()
+        intents = discord.Intents.default() # could be .none() as well but this is fine
+        intents.guilds = True
+        intents.members = True
         intents.moderation = True
+        intents.messages = True
         intents.message_content = True
 
         super().__init__(command_prefix="", intents=intents)
